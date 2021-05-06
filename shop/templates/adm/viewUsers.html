@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Users</title>
+</head>
+<body>
+        {% for user in values %}
+            <p>User ID#: {{user.userid}}</p>
+                <p>&emsp;&emsp;Name: {{user.first_name}} {{user.last_name}}</p>
+                <p>&emsp;&emsp;Username: {{user.username}}</p>
+                <p>&emsp;&emsp;Email: {{user.email}}</p>
+                <p>&emsp;&emsp;Password: {{user.password}}</p>
+        {% endfor %}
+</body>
+</html>
+{% endblock content %}

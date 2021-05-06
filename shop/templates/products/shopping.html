@@ -1,0 +1,68 @@
+{% extends "layout2.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+
+<style>
+    .heading{
+    font-family: Trebuchet MS;
+    }
+    .photos {
+    max-width: 40%;
+    }
+    .photo-title {
+    font-family: Trebuchet MS;
+    font-size: 20px;
+    }
+    .photo-desc {
+    font-family: Trebuchet MS;
+    font-size: 16px;
+    }
+
+</style>
+
+    <!-- For demo purpose -->
+    <div class="row py-5">
+      <div class="col-lg-12 mx-auto">
+        
+          <h1 class="heading">Browse Photo Gallery</h1>
+
+        </div>
+      
+    </div>
+    <!-- End -->
+
+{% for item in items %}
+<div class="container-fluid">
+  <div class="px-lg-5">
+
+    <div class="row">
+      <!-- Gallery item -->
+      
+        <div class="bg-white rounded shadow-sm"><img src="{{url_for('static', filename= 'imgs/' + item.filename)}}" alt="" class="photos">
+          <div class="p-4">
+            <h2> <a href="http://localhost:5000/shopping/{{item.itemid}}" class="photo-title">{{item.item_name}}</a></h2>
+            <p class="photo-desc">{{item.item_desc}}</p>
+            <p class="photo-desc">Photo by <a href="#" class="text-reset">
+                        Link to seller page here</a></p>
+              <p  class="photo-desc"><span class="font-weight-bold">Price: ${{"{:,.2f}".format(item.price)}}</span></p>
+            </div>
+          </div>
+      
+      <!-- End -->
+
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+</body>
+{% endblock content %}
+</html>

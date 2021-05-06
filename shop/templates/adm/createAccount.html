@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% extends "layout2.html" %}
+{% block content %}
+<html></html>
+<h2>Create Account</h2>
+    <body>
+    <p></p>
+        <h5>&emsp;Enter your information below: </h5>
+            <form action = "http://localhost:5000/create" method = "POST"
+                enctype = "multipart/form-data">
+                <p></p>
+                <p>&emsp;&emsp;First Name <input type = "text" name = "fname"></p>
+                <p>&emsp;&emsp;Last Name <input type = "text" name = "lname" /></p>
+                <p>&emsp;&emsp;Username <input type = "text" name = "uname" /></p>
+                <p>&emsp;&emsp;Email <input type = "text" name = "email" /></p>
+                <p>&emsp;&emsp;Password <input type = "text" name = "pword" /></p>
+                <p>&emsp;&emsp;Confirm Password <input type = "text" name = "cpword" /></p>
+                <input type="submit" value="submit"/>
+            </form>
+    </body>
+{% endblock content %}
+<html>

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+<html>
+  <style>
+    body{
+      position: relative;
+      top: 15%;
+      right: 15%;
+      text-align: center;
+      font-size: large;
+      font-family: cursive;
+    }
+  </style>
+<form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+{% block content %}
+   <body>
+      <form action = "http://localhost:5000/uploader" method = "POST" 
+         enctype = "multipart/form-data">
+         <p>Upload Picture <input type = "file" name = "file" /></p>
+         <p>Photo Name <input type = "text" name = "title"></p>  
+         <p>Photo Description <input type = "text" name = "description"></p>
+         <p>Photo Price <input type = "text" name = "price"></p>
+         <input type = "submit"/>
+      </form>
+   </body>
+   
+{% endblock content %}
+</html>

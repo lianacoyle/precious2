@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Items</title>
+</head>
+<body>
+        {% for item in values %}
+            <p>Item ID#: {{item.itemid}} Item Name: {{item.item_name}}</p>
+            <p>&emsp;&emsp;Filename: {{item.filename}}</p>
+            <p>&emsp;&emsp;Item Description: {{item.item_desc}}</p>
+            <p>&emsp;&emsp;Price: {{item.price}}</p>
+            <p>&emsp;&emsp;User ID#: {{item.userid}}, Category ID#: {{item.categoryid}}</p>
+            <p></p>
+        {% endfor %}
+</body>
+</html>
+{% endblock content %}
