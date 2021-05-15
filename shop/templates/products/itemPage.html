@@ -14,7 +14,7 @@
     font-family: Trebuchet MS;
     }
     .photos {
-    max-width: 40%;
+    max-width: 60%;
     }
     .photo-title {
     font-family: Trebuchet MS;
@@ -44,13 +44,20 @@
     <div class="row">
       <!-- Gallery item -->
 
-        <div class="bg-white rounded shadow-sm"><img src="{{url_for('static', filename= 'imgs/' + item.filename)}}" alt="" class="photos">
+        <div class="bg-white rounded shadow-sm"><img src="{{url_for('static', filename= 'images/' + item.filename)}}" alt="" class="photos">
           <div class="p-4">
             <h2> <a href="#" class="photo-title"></a></h2>
             <p class="photo-desc">{{item.item_desc}}</p>
             <p class="photo-desc">Photo by <a href="#" class="text-reset">
                         Link to seller page here</a></p>
-              <p  class="photo-desc"><span class="font-weight-bold">Price: ${{"{:,.2f}".format(item.price)}}</span></p>
+              <p  class="photo-desc"><span class="font-weight-bold">Price: ${{"{:}".format(item.price)}}</span></p>
+
+            <form action="{{url_for('AddCart')}}" method="POST">
+                <input type="hidden" name="item_id" value="{{item.itemid}}">
+                <button type="submit" class="btn btn-sm btn-warning"> Add to Cart</button>
+                <label for=""> Quantity:</label>
+                <input type="number" name="quantity" id="" value="1" min="1" max="10">
+            </form>
             </div>
           </div>
 

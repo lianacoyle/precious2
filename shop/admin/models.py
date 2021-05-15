@@ -3,7 +3,8 @@ from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), unique=False, nullable=False)
+    first_name = db.Column(db.String(30), unique=False, nullable=False)
+    last_name = db.Column(db.String(30), unique=False, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(180), unique=False, nullable=False)
@@ -56,7 +57,7 @@ class Item(db.Model):
     item_name = db.Column(db.String(100), nullable=False)
     filename = db.Column(db.String(100), nullable=False)
     item_desc = db.Column(db.String(255), nullable=False)
-    price = db.Column(db.Numeric(7, 2), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
     # create_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'), nullable=False)
 

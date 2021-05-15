@@ -6,7 +6,7 @@ from .models import User, Users, Categories, Item, Cart, CartDetails
 import os
 from shop.products.forms import Addproducts
 
-UPLOAD_FOLDER = 'static/imgs'
+UPLOAD_FOLDER = 'shop/static/images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 #root/home page
@@ -20,8 +20,8 @@ def admin():
     if 'email' not in session:
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
-    products = Addproducts.query.all()
-    return render_template('adm/index.html', title='Admin Page', products=products)
+    #products = Addproducts.query.all()
+    return render_template('adm/index.html', title='Admin Page')
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -29,22 +29,31 @@ def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         hash_password = bcrypt.generate_password_hash(form.password.data)
-        user = User(name=form.name.data,username=form.username.data, email=form.email.data, password=hash_password)
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
+                    email=form.email.data, password=hash_password)
         db.session.add(user)
         db.session.commit()
-        flash(f'Welcome {form.name.data} Thank you for registering','success')
+        flash(f'Welcome {form.first_name.data} Thank you for registering','success')
         return redirect(url_for('admin'))
     return render_template('adm/register.html', form=form, title="Registration page")
+
+
+# Go to this endpoint to see what is in the User table
+@app.route("/viewUsers")
+def viewUsers():
+    return render_template('adm/viewUsers.html', values=User.query.all())
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
     if request.method =="POST" and form.validate():
-        user = User.query.filter_by(email = form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
+            session['name'] = user.first_name
             flash(f'Welcome {form.email.data} You are logged in now', 'success')
-            return redirect(request.args.get('next') or url_for('admin'))
+            return redirect(request.args.get('next') or url_for('precious'))
         else:
             flash ('Wrong Password please try again', 'danger')
     return render_template('adm/login.html', form=form, title="Login Page")
@@ -52,6 +61,10 @@ def login():
 @app.route('/DevPage')
 def DevPage():
     return render_template('adm/Dev_Page.html')
+
+@app.route('/profile')
+def profile():
+    return "future profile page"
 
 @app.route("/phot")
 def phot():
@@ -78,7 +91,7 @@ def shopping():
 @app.route('/shopping/<itemid>')
 def showItem(itemid):
     item = Item.query.filter_by(itemid=itemid).first()
-    return render_template('adm/itemPage.html', item=item)
+    return render_template('products/itemPage.html', item=item)
 
 @app.route('/cart/<cartid>')
 def showCart(cartid):
@@ -117,11 +130,6 @@ def create():
             return redirect(url_for("viewUsers"))
 
     return render_template('adm/createAccount.html')
-
-
-@app.route("/viewUsers")
-def viewUsers():
-    return render_template('adm/viewUsers.html', values=Users.query.all())
 
 
 @app.route("/loginA", methods=["POST", "GET"])
@@ -164,7 +172,11 @@ def loginA():
 
 @app.route("/logout")
 def logout():
-    return "You have completed a successful logout!"
+    session.pop('email', default=None)
+    session.pop('name', default=None)
+    session.pop('ShoppingCart', default=None)
+    return redirect(request.referrer)
+    #return "You have completed a successful logout!"
 
 # user checkout page
 @app.route("/ucos")
@@ -198,6 +210,8 @@ def upload():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            #basedir = os.path.abspath(os.path.dirname(__file__))
+            #UPLOAD_FOLDER = os.path.join(basedir, 'static\images')
             file.save(os.path.join(UPLOAD_FOLDER, filename))
             item_name = request.form["title"]
             item_fname = file.filename
@@ -216,7 +230,7 @@ def upload():
 
 @app.route("/viewItems")
 def viewItems():
-    return render_template('adm/viewItems.html', values=Item.query.all())
+    return render_template('products/viewItems.html', values=Item.query.all())
 
 # shopping cart page
 @app.route("/scn")

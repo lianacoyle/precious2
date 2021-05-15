@@ -1,4 +1,4 @@
-{% extends "layout2.html" %}
+{% extends "layout.html" %}
 
 {% block content %}
 
@@ -9,7 +9,8 @@
     <div class="text-center h1 text-danger">Register</div>
 <form method="post" enctype="multipart/form-data">
   <div>
-    {{ render_field(form.name, class="form-control") }}
+    {{ render_field(form.first_name, class="form-control") }}
+    {{ render_field(form.last_name, class="form-control") }}
     {{ render_field(form.username, class="form-control") }}
     {{ render_field(form.email, class="form-control") }}
     {{ render_field(form.password, class="form-control") }}

@@ -20,17 +20,17 @@ min-height:100%;
 position:relative;
 }
     .footer {
-        position:fixed;
+        position: absolute;
         text-align: left;
         left: 0;
-        bottom: 0;
+        bottom: -100px;
         width: 100%;
-        height: 40px;
+        height: 70px;
         background-color: #343a40;
         color: black;
         text-align: center;
         font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .tab {
@@ -41,49 +41,52 @@ position:relative;
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{ url_for('precious') }}">Precious</a> 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('precious') }}">Precious</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <!--<li class="nav-item"><a class="nav-link" href="{{ url_for('phot') }}">Precious Photography</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('me') }}">Precious Me</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('designs') }}">Precious Designs</a></li> -->
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('shopping') }}">Shopping</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('upload_cart') }}">Shopping Cart</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('uco') }}">Checkout</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('upload_form') }}">Upload</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <!--<li class="nav-item"><a class="nav-link" href="{{ url_for('phot') }}">Precious Photography</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('me') }}">Precious Me</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('designs') }}">Precious Designs</a></li> -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('shopping') }}">Shopping</a></li>
+                    <!--<li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>-->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('upload_cart') }}">Shopping Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('uco') }}">Checkout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('upload_form') }}">Upload</a></li>
+                    {% if 'name' in session %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"> Hello {{session['name']}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('getCart') }}">
+                        Cart ({{session['ShoppingCart']|length}})</a></li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+    </nav>
+    <div id="content" class="container">
+        {% block content %}
+
+        {% endblock %}
     </div>
-         
     <div class="footer">
+        <br>
         <a href=DevPage>Developers</a>
-        
+
         <a class = "tab" href=contact>Contact Us</a>
-        
+
         <a class = "tab" href=social>Social Media</a>
     </div>
-</nav>
-<div id="content" class="container">
-{% block content %}
-
-{% endblock %}
-</div>
-<div id>
-
-</div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
 
+</body>
 </html>
