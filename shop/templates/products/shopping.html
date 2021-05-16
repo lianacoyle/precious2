@@ -1,107 +1,161 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% block content %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shopping</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
-</head>
-<body>
-
 
 <style>
-    .heading{
-    font-family: Trebuchet MS;
-    }
-    .photos {
-    max-width: 40%;
-    }
-    .photo-title {
-    font-family: Trebuchet MS;
-    font-size: 20px;
-    }
-    .photo-desc {
-    font-family: Trebuchet MS;
-    font-size: 16px;
-    }
-    .bottom{
-    bottom-margin: 100px
-    }
-        #container {
-min-height:100%;
-position:relative;
-}
     .footer {
         position: relative;
-        text-align: left;
-        left: 0;
-        bottom: -100px;
-        width: 100%;
-        height: 70px;
-        background-color: #343a40;
-        color: black;
-        text-align: center;
-        font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-        font-size: 18px;
     }
 
-    .tab {
-        margin-left: 5em;
-    }
+    /* Style the Image Used to Trigger the Modal */
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
+#myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption {
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+  from {transform:scale(0)}
+  to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
+  }
+}
 </style>
 
-    <!-- For demo purpose -->
-    <div class="row py-5">
-      <div class="col-lg-12 mx-auto">
-        
-          <h1 class="heading">Browse Photo Gallery</h1>
+<script type="text/javascript"> 
+    // Get the modal
+var modal = document.getElementById("myModal");
 
-        </div>
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById("myImg");
+var modalImg = document.getElementById("img01");
+var captionText = document.getElementById("caption");
+img.onclick = function(){
+  modal.style.display = "block";
+  modalImg.src = this.src;
+  captionText.innerHTML = this.alt;
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+</script> 
+
+<div class="row py-5">
+    <div class="col-lg-12 mx-auto">
       
-    </div>
-    <!-- End -->
+        <h1 class="heading">Browse Photo Gallery</h1>
 
-{% for item in items %}
-<div class="container-fluid">
-  <div class="px-lg-5">
-
-    <div class="row">
-      <!-- Gallery item -->
-      <p></p>
-        <div class="bg-white rounded shadow-sm"><img src="{{url_for('static', filename= 'images/' + item.filename)}}" alt="" class="photos">
-          <div class="p-4">
-            <h2> <a href="http://localhost:5000/shopping/{{item.itemid}}" class="photo-title">{{item.item_name}}</a></h2>
-            <p class="photo-desc">{{item.item_desc}}</p>
-            <p class="photo-desc">Photo by <a href="#" class="text-reset">
-                        Link to seller page here</a></p>
-              <p  class="photo-desc"><span class="font-weight-bold">Price: ${{"{:}".format(item.price)}}</span></p>
-            </div>
-                        <form action="{{url_for('AddCart')}}" method="POST">
-                <input type="hidden" name="item_id" value="{{item.itemid}}">
-                <button type="submit" class="btn btn-sm btn-warning"> Add to Cart</button>
-                <label for=""> Quantity:</label>
-                <input type="number" name="quantity" id="" value="1" min="1" max="10">
-            </form>
-          </div>
-
-      
-      <!-- End -->
-    </div>
-
+      </div>
+    
   </div>
 
-</div>
-{% endfor %}
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-</body>
-{% endblock content %}
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
+<div class="container">
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-3 mt-5">
+            <div class="card">
+                <img id="myImg" src="{{url_for('static', filename= 'images/' + item.filename)}}" alt="{{item.item_desc}}" class="card-img-top" height="200" style="width:100%;max-width:300px">
+                <div id="myModal" class="modal">
 
-</html>
+                    <!-- The Close Button -->
+                    <span class="close">&times;</span>
+                  
+                    <!-- Modal Content (The Image) -->
+                    <img class="modal-content" id="img01">
+                  
+                    <!-- Modal Caption (Image Text) -->
+                    <div id="caption"></div>
+                  </div>
+
+                <div class="card-body">
+                    <h5 class="text-center">{{item.item_name}}</h5>
+                    <p class="text-center">Price ${{item.price}}</p>
+                    <div class="card-footer">
+                        <!-- <a href='#' class="float-left btn btn-sm btn-primary">details</a>  -->
+                        <form action="{{url_for('AddCart')}}" method="POST">
+                            <input type="hidden" name="item_id" value="{{item.itemid}}">
+                            <input type="number" name="quantity" id="" value="1" min="1" max="10" class="float-left">
+                            <button type="submit" class="float-right btn btn-sm btn-warning">Add to cart</button>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
