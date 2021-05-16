@@ -10,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(180), unique=False, nullable=False)
     profile = db.Column(db.String(180), unique=False, nullable=False, default='profile.jpg')
 
+    #items = db.relationship('Item', backref='user', lazy=True)
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -24,8 +25,8 @@ class Users(db.Model):
     #vendor_flag = db.Column(db.Boolean, default=False)
     create_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
 
-    items = db.relationship('Item', backref='users', lazy=True)
-    carts = db.relationship('Cart', backref='users', lazy=True)
+    #items = db.relationship('Item', backref='users', lazy=True)
+    #carts = db.relationship('Cart', backref='users', lazy=True)
 
     def __init__(self, first_name, last_name, email, username, password):
         self.first_name = first_name
@@ -58,24 +59,34 @@ class Item(db.Model):
     filename = db.Column(db.String(100), nullable=False)
     item_desc = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    # create_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    userid = db.Column(db.Integer, db.ForeignKey('users.userid'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    #user = db.relationship('Item', backref='user', lazy=True)
+    #category = db.relationship('Item', backref='category', lazy=True)
+    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
 
     # categoryid = db.Column(db.Integer, db.ForeignKey('category.categoryid'), nullable=False)
 
     # cartdetails = db.relationship('CartDetails', backref='item', lazy=True)
 
     # Note: defaults to '1' for category id and user id
-    def __init__(self, item_name, filename, item_desc, price, userid=1, categoryid=1):
+    def __init__(self, item_name, filename, item_desc, price, category_id, userid=1):
         self.item_name = item_name
         self.filename = filename
         self.item_desc = item_desc
         self.price = price
         self.userid = userid
-        self.categoryid = categoryid
+        self.category_id = category_id
 
     def __repr__(self):
         return f"Item('{self.itemid}','{self.item_name}','{self.filename}','{self.price}')"
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False, unique=True)
+
 
 
 class Cart(db.Model):

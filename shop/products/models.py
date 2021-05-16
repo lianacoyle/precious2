@@ -18,8 +18,8 @@ class Addproduct(db.Model):
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
     brand = db.relationship('Category', backref=db.backref('brands', lazy=True))
 
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
+    #category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    #category = db.relationship('Category', backref=db.backref('posts', lazy=True))
 
     image_1 = db.Column(db.String(150), nullable=False, default='image.jpg')
     image_2 = db.Column(db.String(150), nullable=True, default='image.jpg')
@@ -34,7 +34,7 @@ class Brand(db.Model):
     name = db.Column(db.String(30), nullable=False, unique=True)
 
 
-class Category(db.Model):
+class Category2(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False, unique=True)
 

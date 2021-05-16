@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Categories</title>
+</head>
+<body>
+        {% for category in values %}
+            <p>Category ID#: {{category.id}} Category Name: {{category.name}}</p>
+            <p></p>
+        {% endfor %}
+</body>
+</html>
+{% endblock content %}

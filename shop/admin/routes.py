@@ -1,8 +1,8 @@
 from flask import render_template, session, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-from shop import app, db, bcrypt
-from .forms import RegistrationForm, LoginForm
-from .models import User, Users, Categories, Item, Cart, CartDetails
+from shop import app, db, bcrypt, photos
+from .forms import RegistrationForm, LoginForm, UploadForm
+from .models import User, Users, Category, Item, Cart, CartDetails
 import os
 from shop.products.forms import Addproducts
 
@@ -55,7 +55,7 @@ def login():
             flash(f'Welcome {form.email.data} You are logged in now', 'success')
             return redirect(request.args.get('next') or url_for('precious'))
         else:
-            flash ('Wrong Password please try again', 'danger')
+            flash('Wrong Password please try again', 'danger')
     return render_template('adm/login.html', form=form, title="Login Page")
 
 @app.route('/DevPage')
@@ -66,21 +66,10 @@ def DevPage():
 def profile():
     return "future profile page"
 
-@app.route("/phot")
-def phot():
-    return "Photography"
 
 @app.route("/contact")
 def contact():
     return render_template('adm/Contactus.html')
-
-@app.route("/me")
-def me():
-    return "PM"
-
-@app.route("/des")
-def designs():
-    return "Des"
 
 @app.route('/shopping')
 def shopping():
@@ -132,44 +121,6 @@ def create():
     return render_template('adm/createAccount.html')
 
 
-@app.route("/loginA", methods=["POST", "GET"])
-def loginA():
-    if request.method == "POST":
-        session.permanent = True
-        # Retrieve input values from web form
-        email = request.form['email']
-        password = request.form['password']
-        # Look for email from login form in User table
-        found_email = Users.query.filter_by(email=email).first()
-        # If there is a record for that table in the email
-        if found_email:
-            # Get the password associated with that email
-            found_password = found_email.password
-            print('lookup password: {}'.format(found_password))
-            print('form password: {}'.format(password))
-            # If the passwords match
-            if found_password.strip() == password.strip():
-                # Create user session for that email
-                print('the passwords matched!')
-                session['email'] = email
-                flash('Login Successful!', 'success')
-                return redirect(url_for('precious'))
-
-            # If the passwords don't match
-            else:
-                flash('Password does not match')
-                print('passwords did not match')
-                return redirect(url_for('create'))
-
-        # If the emails don't match
-        else:
-            print("reached 'email doesn't match' else statement")
-            flash('No account associated with that email')
-            return redirect(url_for('create'))
-
-    return render_template('adm/loginA.html')
-
-
 @app.route("/logout")
 def logout():
     session.pop('email', default=None)
@@ -178,11 +129,6 @@ def logout():
     return redirect(request.referrer)
     #return "You have completed a successful logout!"
 
-# user checkout page
-@app.route("/ucos")
-@app.route("/userCheckout")
-def uco():
-    return render_template('adm/userCheckout.html')
 
 # user upload page
 
@@ -193,44 +139,53 @@ def allowed_file(filename):
 @app.route("/uua")
 @app.route('/userUpload')
 def upload_form():
-    return render_template('adm/userUpload.html')
+    form = UploadForm(request.form)
+    return render_template('adm/userUpload.html', form=form)
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload():
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+
+    form = UploadForm(request.form)
+    categories = Category.query.all()
     if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            #flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            #basedir = os.path.abspath(os.path.dirname(__file__))
-            #UPLOAD_FOLDER = os.path.join(basedir, 'static\images')
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-            item_name = request.form["title"]
-            item_fname = file.filename
-            item_desc = request.form["description"]
-            item_price = float(request.form["price"])
+        photos.save(request.files.get('item_file'))
+        filename = secure_filename(request.files.get('item_file').filename)
+        item_name = request.form.get('item_name')
+        item_desc = request.form.get('item_desc')
+        item_price = request.form.get('item_price')
+        category_id = request.form.get('category')
+        print(f"category: {category_id}")
 
-            item = Item(item_name, item_fname, item_desc, item_price)
-            db.session.add(item)
-            db.session.commit()
-            print('item object committed')
-            flash("Item successfully created!")
-            return redirect(url_for("viewItems"))
+        item = Item(item_name, filename, item_desc, item_price, category_id)
+        db.session.add(item)
+        db.session.commit()
+        flash(f'The listing {item_name} has been added to your database', "success")
+        return redirect(url_for("shopping"))
 
-            #return redirect(url_for('upload_form',filename=filename))
-    return "Congratulations Upload Complete"
+    return render_template('adm/userUpload.html', form=form, categories=categories)
+
 
 @app.route("/viewItems")
 def viewItems():
     return render_template('products/viewItems.html', values=Item.query.all())
+
+@app.route('/addcat', methods=['GET','POST'])
+def addcat():
+    if request.method == "POST":
+        getcategory = request.form.get('category')
+        cat = Category(name=getcategory)
+        db.session.add(cat)
+        flash(f'The Category {getcategory} was added to your database', 'success')
+        db.session.commit()
+        return redirect(url_for('addcat'))
+    return render_template('products/addbrand.html')
+
+@app.route("/viewCats")
+def viewCategories():
+    return render_template('products/viewCategories.html', values=Category.query.all())
 
 # shopping cart page
 @app.route("/scn")

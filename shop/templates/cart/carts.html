@@ -22,7 +22,6 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>Subtotal</th>
-                <th>Update</th>
                 <th>Delete</th>
                 <th></th>
                 <th></th>
@@ -37,7 +36,6 @@
                     <td>${{ item.price }}</td>
                     {% set subtotal = item.quantity|int * item.price|int %}
                     <td>${{subtotal}}</td>
-                    <td><a href="#">Update</a></td>
                     <td><a href="#">Remove</a></td>
 
                 </tr>
@@ -61,12 +59,6 @@
         </table>
     </div>
 </div>
-
-
-{{session['ShoppingCart']}}
-
-
-
 
 {% endblock content %}
 </html>
