@@ -25,13 +25,14 @@
       enctype="multipart/form-data">
   <div>
     {{ render_field(form.item_name, class="form-control") }}
-    {{ render_field(form.item_desc, class="form-control") }}
+    {{ render_field(form.item_desc, class="form-control", rows="5") }}
     {{ render_field(form.item_price, class="form-control") }}
 
-    <div class="row">
-        <div class="col-md-4">{{ render_field(form.item_file, class="form-control")}}</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">{{ render_field(form.item_file, class="form-control")}}</div>
+        </div>
     </div>
-
     <label for="category">Add a category</label>
     <select name="category" id="category" class="form-control" required>
         <option value="{{item.category_id}}">{{item.category.name}}</option>
