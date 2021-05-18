@@ -3,4 +3,38 @@
 
 {% include '_messages.html' %}
 
+
+<div class="container mt-5">
+    <table class="table table-sm table-condensed table-striped">
+        <thead>
+            <th></th>
+            <th>ID#</th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>User</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{item.itemid}}</td>
+                <td>{{item.item_name}}</td>
+                <td>${{item.price}}</td>
+                <td>{{item.category.name}}</td>
+                <td><img src="{{url_for('static', filename='images/' + item.filename)}}"
+                    width="50" height="40"/></td>
+                <td>{{item.user.username}}</td>
+                <td><a href="{{url_for('updateitem',id=item.itemid)}}" class="btn btn-info btn-sm">Edit</a></td>
+                <td><a href="{{url_for('updateitem',id=item.itemid)}}" class="btn btn-danger btn-sm">Delete</a></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
 {% endblock content %}

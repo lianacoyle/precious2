@@ -1,6 +1,6 @@
 from flask import render_template, session, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-from shop import app, db, bcrypt, photos
+from shop import app, db, bcrypt, photos, search
 from .forms import RegistrationForm, LoginForm, UploadForm
 from .models import User, Users, Category, Item, Cart, CartDetails
 import os
@@ -13,15 +13,24 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 @app.route("/")
 @app.route("/precious")
 def precious():
-    return render_template('adm/home.html')
+    items = Item.query.all()
+    return render_template('adm/home.html', items=items)
+
+
+@app.route('/result')
+def result():
+    searchword = request.args.get('q')
+    items = Item.query.msearch(searchword, fields=['item_name', 'item_desc'], limit=3)
+    return render_template('products/result.html', items=items)
+
 
 @app.route('/admin')
 def admin():
     if 'email' not in session:
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
-    #products = Addproducts.query.all()
-    return render_template('adm/index.html', title='Admin Page')
+    items = Item.query.all()
+    return render_template('adm/index.html', title='Admin Page', items=items)
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -33,8 +42,8 @@ def register():
                     email=form.email.data, password=hash_password)
         db.session.add(user)
         db.session.commit()
-        flash(f'Welcome {form.first_name.data} Thank you for registering','success')
-        return redirect(url_for('admin'))
+        flash(f'Welcome {form.first_name.data}! Thank you for registering.','success')
+        return redirect(url_for('login'))
     return render_template('adm/register.html', form=form, title="Registration page")
 
 
@@ -148,6 +157,11 @@ def upload():
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
 
+    # lookup user id for logged in user
+    email = session['email']
+    user = User.query.filter_by(email=email).first()
+    user_id = user.id
+
     form = UploadForm(request.form)
     categories = Category.query.all()
     if request.method == 'POST':
@@ -158,8 +172,9 @@ def upload():
         item_price = request.form.get('item_price')
         category_id = request.form.get('category')
         print(f"category: {category_id}")
+        print(f"User ID: {user_id}")
 
-        item = Item(item_name, filename, item_desc, item_price, category_id)
+        item = Item(item_name, filename, item_desc, item_price, category_id, user_id)
         db.session.add(item)
         db.session.commit()
         flash(f'The listing {item_name} has been added to your database', "success")
@@ -167,6 +182,30 @@ def upload():
 
     return render_template('adm/userUpload.html', form=form, categories=categories)
 
+
+@app.route('/updateitem/<int:id>', methods=['GET','POST'])
+def updateitem(id):
+    categories = Category.query.all()
+    item = Item.query.get_or_404(id)
+    category = request.form.get('category')
+    form = UploadForm(request.form)
+    if request.method == "POST":
+        item.item_name = form.item_name.data
+        item.item_desc = form.item_desc.data
+        item.price = form.item_price.data
+        item.category_id = category
+        db.session.commit()
+        flash(f'Your listing has been updated','success')
+        return redirect('admin')
+
+
+
+    form.item_name.data = item.item_name
+    form.item_desc.data = item.item_desc
+    form.item_price.data = item.price
+
+    return render_template('products/updateitem.html', form=form, categories=categories,
+                           item=item)
 
 @app.route("/viewItems")
 def viewItems():
@@ -191,5 +230,6 @@ def viewCategories():
 @app.route("/scn")
 @app.route('/shoppingCart')
 def upload_cart():
-    return render_template('cart/shoppingCart.html')
+    form = UploadForm(request.form)
+    return render_template('cart/shoppingCart.html', form=form)
 

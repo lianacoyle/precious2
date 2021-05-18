@@ -1,4 +1,4 @@
-from shop import db
+from shop import db, search
 from datetime import datetime
 
 class User(db.Model):
@@ -54,6 +54,7 @@ class Categories(db.Model):
 
 
 class Item(db.Model):
+    __searchable__ = ['item_name', 'item_desc']
     itemid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     item_name = db.Column(db.String(100), nullable=False)
     filename = db.Column(db.String(100), nullable=False)
@@ -65,7 +66,7 @@ class Item(db.Model):
     #user = db.relationship('Item', backref='user', lazy=True)
     #category = db.relationship('Item', backref='category', lazy=True)
     category = db.relationship('Category', backref=db.backref('posts', lazy=True))
-
+    user = db.relationship('User', backref=db.backref('posts', lazy=True))
     # categoryid = db.Column(db.Integer, db.ForeignKey('category.categoryid'), nullable=False)
 
     # cartdetails = db.relationship('CartDetails', backref='item', lazy=True)

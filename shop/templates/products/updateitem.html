@@ -20,7 +20,7 @@
 <div class="container mt-5 mb-15">
   {% include '_messages.html' %}
     {% from "_formhelpers.html" import render_field %}
-    <div class="text-center h1 text-danger">Create Photo Listing</div>
+    <div class="text-center h1 text-danger">Edit Photo Listing</div>
 <form action = "http://localhost:5000/uploader" method="POST"
       enctype="multipart/form-data">
   <div>
@@ -34,7 +34,7 @@
 
     <label for="category">Add a category</label>
     <select name="category" id="category" class="form-control" required>
-        <option value="">Select a category</option>
+        <option value="{{item.category_id}}">{{item.category.name}}</option>
         {% for category in categories %}
         <option value="{{category.id}}">{{category.name}}</option>
         {% endfor %}

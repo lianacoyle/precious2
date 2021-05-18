@@ -48,10 +48,10 @@ position:relative;
         </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('shopping') }}">Shopping</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('shopping') }}">Buy Photos</a></li>
                     <!--<li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>-->
                     <!--<li class="nav-item"><a class="nav-link" href="{{ url_for('upload_cart') }}">Shopping Cart</a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('upload') }}">Upload</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('upload') }}">Sell Photos</a></li>
                     {% if 'name' in session %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"> Hello {{session['name']}}</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
@@ -61,8 +61,8 @@ position:relative;
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('getCart') }}">
                         Cart ({{session['ShoppingCart']|length}})</a></li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" action="{{url_for('result')}}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </div>
