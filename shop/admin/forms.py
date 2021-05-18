@@ -22,4 +22,4 @@ class UploadForm(Form):
     item_name = StringField('Photo Name', [validators.DataRequired()])
     item_desc = TextAreaField('Photo Description', [validators.DataRequired()])
     item_price = IntegerField('Price', [validators.DataRequired()])
-    item_file = FileField('Image', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'gif', 'jpeg'])])
+    item_file = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'gif', 'jpeg'])])

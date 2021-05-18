@@ -21,7 +21,7 @@
   {% include '_messages.html' %}
     {% from "_formhelpers.html" import render_field %}
     <div class="text-center h1 text-danger">Edit Photo Listing</div>
-<form action = "http://localhost:5000/uploader" method="POST"
+<form action = "http://localhost:5000/updateitem/{{item.itemid}}" method="POST"
       enctype="multipart/form-data">
   <div>
     {{ render_field(form.item_name, class="form-control") }}

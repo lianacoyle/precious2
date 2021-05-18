@@ -1,4 +1,4 @@
-from flask import render_template, session, request, redirect, url_for, flash
+from flask import render_template, session, request, redirect, url_for, flash, current_app
 from werkzeug.utils import secure_filename
 from shop import app, db, bcrypt, photos, search
 from .forms import RegistrationForm, LoginForm, UploadForm
@@ -16,6 +16,13 @@ def precious():
     items = Item.query.all()
     return render_template('adm/home.html', items=items)
 
+'''
+@app.route('/categories/int:id>')
+def get_category(id):
+    get_item = Item.query.filter_by(category_id=id)
+    categories = Category.query.join(Item,(Category.id==Item.category_id)).all()
+    return render_template('products/shopping.html', get_cat_item=get_item, categories=categories)
+'''
 
 @app.route('/result')
 def result():
@@ -194,11 +201,18 @@ def updateitem(id):
         item.item_desc = form.item_desc.data
         item.price = form.item_price.data
         item.category_id = category
+        if request.files.get('item_file'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/images/" + item.filename))
+                photos.save(request.files.get('item_file'))
+                item.filename = secure_filename(request.files.get('item_file').filename)
+            except:
+                photos.save(request.files.get('item_file'))
+                item.filename = secure_filename(request.files.get('item_file').filename)
+
         db.session.commit()
         flash(f'Your listing has been updated','success')
-        return redirect('admin')
-
-
+        return redirect(url_for('admin'))
 
     form.item_name.data = item.item_name
     form.item_desc.data = item.item_desc
@@ -206,6 +220,28 @@ def updateitem(id):
 
     return render_template('products/updateitem.html', form=form, categories=categories,
                            item=item)
+
+
+@app.route('/deleteitem/<int:id>', methods=["POST"])
+def deleteitem(id):
+
+    item = Item.query.get_or_404(id)
+    if request.method == "POST":
+        if request.files.get('item_file'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/images/" + item.filename))
+            except Exception as e:
+                print(e)
+
+        db.session.delete(item)
+        db.session.commit()
+        flash(f"The listing '{item.item_name}' has been deleted", 'success')
+        return redirect(url_for('admin'))
+    flash(f'Cannot delete the product','danger')
+
+    return redirect(url_for('admin'))
+
+
 
 @app.route("/viewItems")
 def viewItems():
